@@ -5,7 +5,7 @@
   <style>
     body {
       overflow: hidden;
-      background: white;
+      background: black;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,15 +20,6 @@
 <body>
   <canvas id="pixelCanvas" style="object-fit: contain; position: absolute;"></canvas>
   <script>
-    function releaseCanvas(canvas) {
-      canvas.width = 1;
-      canvas.style.width = "1vw";
-      canvas.height = 1;
-      canvas.style.height = "1vh";
-      const ctx = canvas.getContext('2d');
-      ctx && ctx.clearRect(0, 0, 1, 1);
-      canvas.remove();
-    }
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
@@ -74,8 +65,8 @@
       canvas.style.height = `${newVH}vh`;
     }
 
-    const backgroundColor = "#615bfe"; // Background color for the rug
-    const textColor = "#0731a7"; // Text color for the message
+    const backgroundColor = '#ffffff'; // Background color for the rug
+    const textColor = '#0731a7';//adjustColorBrightness('#0731a7', getRandomInt(-40, 40)); // Text color for the message
     const basePatternColor = "#ffffff"; // Base color for the rug pattern
 
     // Additional colors for pixelation
@@ -136,21 +127,51 @@
       return pattern.flat();
     }
 
-    function drawPixelatedText(message, x, y, scale, color) {
+    function drawPixelatedText(message, x, y, scale, textColor) {
       const offscreenCanvas = document.createElement('canvas');
       const offscreenCtx = offscreenCanvas.getContext('2d');
       offscreenCanvas.width = canvas.width;
       offscreenCanvas.height = canvas.height;
 
+      // Draw the text on the offscreen canvas
       offscreenCtx.font = `${512 * scale}px Arial`;
-      offscreenCtx.fillStyle = color;
+      offscreenCtx.fillStyle = textColor;
       offscreenCtx.textAlign = "center";
       offscreenCtx.textBaseline = "middle";
       offscreenCtx.fillText(message, x * scale, y * scale);
 
+      // Extract the pixel data of the text
+      const textData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      const pixels = textData.data;
+
+      // Modify pixels to apply random opacity and brightness
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] > 0) { // Only modify non-transparent pixels
+          // Randomize brightness
+          const brightnessOffset = getRandomInt(-40, 40);
+          pixels[i] = Math.min(255, Math.max(0, pixels[i] + brightnessOffset)); // Red
+          pixels[i + 1] = Math.min(255, Math.max(0, pixels[i + 1] + brightnessOffset)); // Green
+          pixels[i + 2] = Math.min(255, Math.max(0, pixels[i + 2] + brightnessOffset)); // Blue
+
+          // Randomize opacity (apply to alpha channel)
+          if (Math.random() < 0.5) { // 50% chance to reduce opacity
+            pixels[i + 3] = pixels[i + 3] * getRandomInt(50, 100) / 100; // Random opacity 50-100%
+          }
+        }
+      }
+
+      // Put the modified pixel data back onto the offscreen canvas
+      offscreenCtx.putImageData(textData, 0, 0);
+
+      // Draw the offscreen canvas onto the main canvas
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(offscreenCanvas, 0, 0, offscreenCanvas.width, offscreenCanvas.height, 0, 0, canvas.width / scale, canvas.height / scale);
+      ctx.drawImage(
+        offscreenCanvas,
+        0, 0, offscreenCanvas.width, offscreenCanvas.height,
+        0, 0, canvas.width / scale, canvas.height / scale
+      );
     }
+
 
     function drawPixelArtRug() {
       const rugStartX = numSpaces * pixelSize;
@@ -171,7 +192,7 @@
 
         // Apply brightness adjustment to frays
         if (rugPattern[i] === 5 || rugPattern[i] === 6) {
-          color = adjustColorBrightness(colorMap[6], getRandomInt(-30, 30));
+          color = adjustColorBrightness(colorMap[6], getRandomInt(-30, 30));//change colorMap[value] for frays
         }
 
         // Draw frayed ends for even rows
@@ -190,7 +211,7 @@
       ctx.strokeRect(rugStartX, rugStartY, rugEndX - rugStartX, rugEndY - rugStartY);
 
       // Draw the pixelated message in the center of the rug
-      drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.1, textColor);
+      drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.125, textColor);
     }
 
     function drawRightFrayedEnd(x, y, color) {
@@ -232,21 +253,17 @@
     drawPixelArtRug();
 
     let timer;
-    document.querySelector("canvas").addEventListener('click', event => {
-      if (event.detail === 1) {
-        timer = setTimeout(() => {
-          location.reload();
-        }, 200)
-      }
-    });
-
-    document.querySelector("canvas").addEventListener("dblclick", function () {
+    canvas.addEventListener("click", e => e.detail === 1 && (timer = setTimeout(() => location.reload(), 250)));
+    canvas.addEventListener("dblclick", () => {
       clearTimeout(timer);
-      const link = document.createElement('a');
-      link.download = 'F5rugz.png';
-      link.href = canvas.toDataURL();
+      const link = Object.assign(document.createElement('a'), {
+        download: 'F5rugz.png',
+        href: canvas.toDataURL()
+      });
       link.click();
     });
+
+    function releaseCanvas(c){c.width=1;c.style.width="1vw";c.height=1;c.style.height="1vh";const x=c.getContext("2d");x&&x.clearRect(0,0,1,1);c.remove()}window.addEventListener("pagehide",()=>{Array.prototype.slice.call(document.getElementsByTagName("canvas")).forEach(releaseCanvas)});
   </script>
 </body>
 </html>
