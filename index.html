@@ -50,7 +50,7 @@
     const pixelSize = 8;
     const rowLength = canvasWidth / pixelSize;
     const numSpaces = 11;
-    const numRows = 63;
+    const numRows = 64;
     const frayLength = pixelSize * 5; // Adjust the length of the fray
     const frayCount = 10; // Adjust the number of frays
 
@@ -66,7 +66,7 @@
     }
 
     const backgroundColor = '#ffffff'; // Background color for the rug
-    const textColor = '#0731a7';//adjustColorBrightness('#0731a7', getRandomInt(-40, 40)); // Text color for the message
+    const textColor = '#3b88c3';//adjustColorBrightness('#0731a7', getRandomInt(-40, 40)); // Text color for the message
     const basePatternColor = "#ffffff"; // Base color for the rug pattern
 
     // Additional colors for pixelation
@@ -85,7 +85,7 @@
     };
 
     const borderColor = "#d8d8d8"; // Border color for the middle rug
-    const message = "₳"; //₿ Update this variable with the desired word, character, number, etc.
+    const message = "🔄"; //₿ Update this variable with the desired word, character, number, etc.
     const rugPattern = generateRugPattern(numSpaces, numRows, rowLength);
 
     function generateRugPattern(numSpaces, numRows, rowLength) {
@@ -133,12 +133,18 @@
       offscreenCanvas.width = canvas.width;
       offscreenCanvas.height = canvas.height;
 
+      // Calculate vertical offset for odd rows
+      const verticalOffset = numRows % 2 === 0 ? 0 : pixelSize / 2;
+
+      // Adjust y-coordinate with the offset
+      const adjustedY = y * scale + verticalOffset;
+
       // Draw the text on the offscreen canvas
-      offscreenCtx.font = `${512 * scale}px Arial`;
+      offscreenCtx.font = `${384 * scale}px Arial`;
       offscreenCtx.fillStyle = textColor;
       offscreenCtx.textAlign = "center";
       offscreenCtx.textBaseline = "middle";
-      offscreenCtx.fillText(message, x * scale, y * scale);
+      offscreenCtx.fillText(message, x * scale, adjustedY);
 
       // Extract the pixel data of the text
       const textData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
@@ -171,6 +177,7 @@
         0, 0, canvas.width / scale, canvas.height / scale
       );
     }
+
 
 
     function drawPixelArtRug() {
@@ -220,13 +227,13 @@
       var textY; // Declare textY without initializing
 
       if (isAndroid) {
-          textY = drawPixelatedText(message, centerX, canvas.height / 1.72, 0.125, textColor);
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.81, 0.125, textColor);
           console.log("Android");
       } else if (isIOS) {
           textY = drawPixelatedText(message, centerX, centerY, 0.125, textColor);
           console.log("iOS");
       } else {
-          textY = drawPixelatedText(message, centerX, canvas.height / 1.71, 0.125, textColor);
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.8, 0.125, textColor);
           console.log("Default");
       }
 
