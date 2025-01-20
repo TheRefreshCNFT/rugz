@@ -213,9 +213,18 @@
       // Draw the pixelated message in the center of the rug
       //drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.125, textColor);
 
+      var isAndroid = /Android/i.test(navigator.userAgent);
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      drawPixelatedText(message, centerX, centerY, 0.125, textColor);
+
+      var textY = drawPixelatedText(message, canvas.width / 2, canvas.height / 1.71, 0.125, textColor);
+
+      if (isAndroid) {
+        textY
+      } else if (isIOS) {
+        textY = textY = drawPixelatedText(message, centerX, centerY, 0.125, textColor);
+      }
     }
 
     function drawRightFrayedEnd(x, y, color) {
@@ -257,7 +266,7 @@
     drawPixelArtRug();
 
     let timer;
-    canvas.addEventListener("click", e => e.detail === 1 && (timer = setTimeout(() => location.reload(), 250)));
+    canvas.addEventListener("click", e => e.detail === 1 && (timer = setTimeout(() => location.reload(), 300)));
     canvas.addEventListener("dblclick", () => {
       clearTimeout(timer);
       const link = Object.assign(document.createElement('a'), {
