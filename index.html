@@ -211,7 +211,11 @@
       ctx.strokeRect(rugStartX, rugStartY, rugEndX - rugStartX, rugEndY - rugStartY);
 
       // Draw the pixelated message in the center of the rug
-      drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.125, textColor);
+      //drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.125, textColor);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      drawPixelatedText(message, centerX, centerY, 0.125, textColor);
     }
 
     function drawRightFrayedEnd(x, y, color) {
