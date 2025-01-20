@@ -217,13 +217,16 @@
       var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
+      var textY = drawPixelatedText(message, centerX, canvas.height / 1.71, 0.125, textColor);
 
-      var textY = drawPixelatedText(message, canvas.width / 2, canvas.height / 1.71, 0.125, textColor);
-
-      if (isAndroid) {
-        textY
-      } else if (isIOS) {
-        textY = drawPixelatedText(message, centerX, centerY, 0.125, textColor);
+      switch (isAndroid, isIOS) {
+        case isAndroid:
+          textY
+          break;
+        case isIOS:
+          textY = drawPixelatedText(message, centerX, centerY, 0.125, textColor);
+        default:
+          textY
       }
     }
 
