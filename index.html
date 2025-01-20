@@ -227,10 +227,10 @@
       var textY; // Declare textY without initializing
 
       if (isAndroid) {
-          textY = drawPixelatedText(message, centerX, canvas.height / 1.81, 0.125, textColor);
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.83, 0.125, textColor);
           console.log("Android");
       } else if (isIOS) {
-          textY = drawPixelatedText(message, centerX, centerY, 0.125, textColor);
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.78, 0.125, textColor);
           console.log("iOS");
       } else {
           textY = drawPixelatedText(message, centerX, canvas.height / 1.8, 0.125, textColor);
