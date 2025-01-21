@@ -331,22 +331,30 @@
             if (!transparent) {
               // Draw the content of the main canvas onto the offscreen canvas
                 offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+                offscreenCanvasBlk.width = canvas.width * multiplier;
+                offscreenCanvasBlk.height = canvas.height * multiplier;
+                offscreenCtxBlk.scale(multiplier, multiplier);
+                offscreenCtxBlk.drawImage(canvas, 0, 0);
+
+                // Save the image as a PNG
+                const link = document.createElement('a');
+                link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
+                link.href = offscreenCanvasBlk.toDataURL('image/png');
+                link.click();
             } else {
                 offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
                 offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+                offscreenCanvas.width = canvas.width * multiplier;
+                offscreenCanvas.height = canvas.height * multiplier;
+                offscreenCtx.scale(multiplier, multiplier);
+                offscreenCtx.drawImage(canvas, 0, 0);
+
+                // Save the image as a PNG
+                const link = document.createElement('a');
+                link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
+                link.href = offscreenCanvas.toDataURL('image/png');
+                link.click();
             }
-
-            offscreenCanvas.width = canvas.width * multiplier;
-            offscreenCanvas.height = canvas.height * multiplier;
-            offscreenCtx.scale(multiplier, multiplier);
-            offscreenCtx.drawImage(canvas, 0, 0);
-
-            // Save the image as a PNG
-            const link = document.createElement('a');
-            link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
-            link.href = offscreenCanvas.toDataURL('image/png');
-            link.click();
-
             return;
         }
 
