@@ -315,14 +315,10 @@
             const offscreenCtx = offscreenCanvas.getContext('2d', { alpha: transparent });
             offscreenCanvas.width = upscaleResolution;
             offscreenCanvas.height = upscaleResolution;
-
-            // Set the background color
-            if (!transparent) {
-                offscreenCtx.fillStyle = '#000'; // Black background
-                offscreenCtx.fillRect(0, 0, upscaleResolution, upscaleResolution);
-            } else {
-                offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
-            }
+            const offscreenCanvasBlk = document.createElement('canvas');
+            const offscreenCtxBlk = offscreenCanvasBlk.getContext('2d', { alpha: transparent });
+            offscreenCtxBlk.fillStyle = '#000000'; // Black background
+            offscreenCtxBlk.fillRect(0, 0, upscaleResolution, upscaleResolution);
 
             // Calculate scaling factors
             const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
@@ -331,11 +327,17 @@
             const offsetX = (upscaleResolution - scaledWidth) / 2;
             const offsetY = (upscaleResolution - scaledHeight) / 2;
 
-            // Draw the content of the main canvas onto the offscreen canvas
-            offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+            // Set the background color
+            if (!transparent) {
+              // Draw the content of the main canvas onto the offscreen canvas
+                offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+            } else {
+                offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
+                offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+            }
+
             offscreenCanvas.width = canvas.width * multiplier;
             offscreenCanvas.height = canvas.height * multiplier;
-
             offscreenCtx.scale(multiplier, multiplier);
             offscreenCtx.drawImage(canvas, 0, 0);
 
