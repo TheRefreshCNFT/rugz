@@ -147,17 +147,17 @@
       offscreenCanvas.height = canvas.height;
 
       // Calculate vertical offset for odd rows
-      const verticalOffset = numRows % 2 === 0 ? 0 : pixelSize / 2;
+      //const verticalOffset = numRows % 2 === 0 ? 0 : pixelSize / 2;
 
       // Adjust y-coordinate with the offset
-      const adjustedY = y * scale + verticalOffset;
+      //const adjustedY = y * scale + verticalOffset;
 
       // Draw the text on the offscreen canvas
       offscreenCtx.font = `${384 * scale}px Arial`;
       offscreenCtx.fillStyle = textColor;
       offscreenCtx.textAlign = "center";
       offscreenCtx.textBaseline = "middle";
-      offscreenCtx.fillText(message, x * scale, adjustedY);
+      offscreenCtx.fillText(message, x * scale, y * scale);
 
       // Extract the pixel data of the text
       const textData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
