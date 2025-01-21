@@ -328,7 +328,7 @@
             const offsetY = (upscaleResolution - scaledHeight) / 2;
 
             // Set the background color
-            if (transparent === true) { console.log(transparent);
+            if (!transparent) { console.log(transparent);
             offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
             offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
             offscreenCanvas.width = canvas.width * multiplier;
