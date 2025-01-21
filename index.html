@@ -147,7 +147,7 @@
       // Draw the text on the offscreen canvas
       offscreenCtx.font = `${384 * scale}px Arial`;
       if (isAndroid) {
-        offscreenCtx.font = `${352 * scale}px Arial`;
+        offscreenCtx.font = `${320 * scale}px Arial`;
       }
       offscreenCtx.fillStyle = textColor;
       offscreenCtx.textAlign = "center";
@@ -229,7 +229,7 @@
       if (isAndroid) {
           textY = drawPixelatedText(message, centerX, canvas.height / 1.85, 0.125, textColor);
       } else if (isIOS) {
-          textY = drawPixelatedText(message, canvas.width / 2.03, canvas.height / 1.98, 0.125, textColor);
+          textY = drawPixelatedText(message, canvas.width / 2.02, canvas.height / 1.98, 0.125, textColor);
       } else {
           textY = drawPixelatedText(message, centerX, canvas.height / 1.8, 0.125, textColor);
       }
