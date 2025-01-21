@@ -31,6 +31,34 @@
 <body>
   <canvas id="pixelCanvas" style="object-fit: contain; position: absolute;"></canvas>
   <script>
+  const message = "🔄"; //₿ Update this variable with the desired word, character, number, etc.
+  const pixelSize = 8;
+  const numSpaces = 11;
+  const numRows = 64;
+  const frayLength = pixelSize * 5; // Adjust the length of the fray
+  const frayCount = 10; // Adjust the number of frays
+  const lW = 1;
+  const backgroundColor = '#ffffff'; // Background color for the rug
+  const textColor = '#3b88c3';//adjustColorBrightness('#0731a7', getRandomInt(-40, 40)); // Text color for the message
+  const basePatternColor = "#ffffff"; // Base color for the rug pattern
+  const borderColor = "#d8d8d8"; // Border color for the middle rug
+  // Additional colors for pixelation
+  const color1 = "#ffffff"; // Additional color 1
+  const color2 = "#ffffff"; // Additional color 2
+  const color3 = "#ffffff"; // Additional color 3
+
+  const colorMap = {
+    5: basePatternColor,
+    6: textColor,
+    9: 'transparent',
+    10: backgroundColor,
+    11: color1,
+    12: color2,
+    13: color3
+  };
+
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
@@ -58,14 +86,9 @@
     const canvas = document.getElementById("pixelCanvas");
     const ctx = canvas.getContext("2d");
     const canvasWidth = 1024;
-    const pixelSize = 8;
     const rowLength = canvasWidth / pixelSize;
-    const numSpaces = 11;
-    const numRows = 64;
-    const frayLength = pixelSize * 5; // Adjust the length of the fray
-    const frayCount = 10; // Adjust the number of frays
-
     const patternHeight = numRows * pixelSize;
+    const rugPattern = generateRugPattern(numSpaces, numRows, rowLength);
     canvas.width = canvasWidth;
     canvas.height = patternHeight;
     canvas.style.width = "100vw";
@@ -75,34 +98,6 @@
       const newVH = 100 - ((numRows - 43) * 0.1);
       canvas.style.height = `${newVH}vh`;
     }
-    //canvas.style.borderRadius = "283px";
-
-    var isAndroid = /Android/i.test(navigator.userAgent);
-    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-
-    const backgroundColor = '#ffffff'; // Background color for the rug
-    const textColor = '#3b88c3';//adjustColorBrightness('#0731a7', getRandomInt(-40, 40)); // Text color for the message
-    const basePatternColor = "#ffffff"; // Base color for the rug pattern
-
-    // Additional colors for pixelation
-    const color1 = "#ffffff"; // Additional color 1
-    const color2 = "#ffffff"; // Additional color 2
-    const color3 = "#ffffff"; // Additional color 3
-
-    const colorMap = {
-      5: basePatternColor,
-      6: textColor,
-      9: 'transparent',
-      10: backgroundColor,
-      11: color1,
-      12: color2,
-      13: color3
-    };
-
-    const borderColor = "#d8d8d8"; // Border color for the middle rug
-    const message = "🔄"; //₿ Update this variable with the desired word, character, number, etc.
-    const rugPattern = generateRugPattern(numSpaces, numRows, rowLength);
 
     function generateRugPattern(numSpaces, numRows, rowLength) {
       const pattern = [];
@@ -149,12 +144,6 @@
       offscreenCanvas.width = canvas.width;
       offscreenCanvas.height = canvas.height;
 
-      // Calculate vertical offset for odd rows
-      //const verticalOffset = numRows % 2 === 0 ? 0 : pixelSize / 2;
-
-      // Adjust y-coordinate with the offset
-      //const adjustedY = y * scale + verticalOffset;
-
       // Draw the text on the offscreen canvas
       offscreenCtx.font = `${384 * scale}px Arial`;
       offscreenCtx.fillStyle = textColor;
@@ -194,8 +183,6 @@
       );
     }
 
-
-
     function drawPixelArtRug() {
       const rugStartX = numSpaces * pixelSize;
       const rugEndX = canvasWidth - numSpaces * pixelSize;
@@ -230,19 +217,14 @@
 
       // Draw the border
       ctx.strokeStyle = borderColor;
-      ctx.lineWidth = 0.5; // Set the border width
+      ctx.lineWidth = lW; // Set the border width
       ctx.strokeRect(rugStartX, rugStartY, rugEndX - rugStartX, rugEndY - rugStartY);
 
-      // Draw the pixelated message in the center of the rug
-      //drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.125, textColor);
-
-
       const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
       var textY; // Declare
 
       if (isAndroid) {
-          textY = drawPixelatedText(message, canvas.width / 2, canvas.height / 1.85, 0.125, textColor);
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.85, 0.125, textColor);
       } else if (isIOS) {
           textY = drawPixelatedText(message, canvas.width / 2.03, canvas.height / 1.98, 0.125, textColor);
       } else {
@@ -287,19 +269,8 @@
     }
 
     drawPixelArtRug();
-/*
-    let timer;
-    canvas.addEventListener("click", e => e.detail === 1 && (timer = setTimeout(() => location.reload(), 300)));
-    canvas.addEventListener("dblclick", () => {
-      clearTimeout(timer);
-      const link = Object.assign(document.createElement('a'), {
-        download: 'F5rugz.png',
-        href: canvas.toDataURL()
-      });
-      link.click();
-    }); */
 
-    let timeout;
+    let timer;
         canvas.addEventListener("click", e => e.detail === 1 && (timer = setTimeout(() => location.reload(), 300)));
 
         canvas.addEventListener("dblclick", () => {
@@ -311,6 +282,10 @@
             const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
             const modal = document.createElement('div');
             modal.className = 'modal';
+            if (modal) {
+              modal.style.background = "#000";
+              modal.style.boxShadow = `0 0 10px ${textColor}`;
+            }
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.textContent = opt;
@@ -319,7 +294,13 @@
                     scaleCanvas(parseInt(opt), opt.includes('t'));
                 };
                 modal.appendChild(btn);
-            });
+                // Apply the styles dynamically
+                if (btn) {
+                  btn.style.background = "#000";
+                  btn.style.color = textColor;
+                  btn.style.boxShadow = `0 0 10px ${textColor}`;
+                }
+              });
             document.body.appendChild(modal);
         }
 
