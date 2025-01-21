@@ -328,7 +328,21 @@
             const offsetY = (upscaleResolution - scaledHeight) / 2;
 
             // Set the background color
-            if (!transparent) { console.log("black");
+            if (transparent) { console.log(transparent);
+            offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
+            offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+            offscreenCanvas.width = canvas.width * multiplier;
+            offscreenCanvas.height = canvas.height * multiplier;
+            offscreenCtx.scale(multiplier, multiplier);
+            offscreenCtx.drawImage(canvas, 0, 0);
+
+            // Save the image as a PNG
+            const link = document.createElement('a');
+            link.download = `RUGZ_${multiplier}k_TP.png`;
+            link.href = offscreenCanvas.toDataURL('image/png');
+            link.click();
+            return;
+            } else { console.log("black");
               // Draw the content of the main canvas onto the offscreen canvas
                 offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
                 offscreenCanvasBlk.width = canvas.width * multiplier;
@@ -338,22 +352,8 @@
 
                 // Save the image as a PNG
                 const link = document.createElement('a');
-                link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
+                link.download = `RUGZ_${multiplier}k_BLK.png`;
                 link.href = offscreenCanvasBlk.toDataURL('image/png');
-                link.click();
-                return;
-            } else { console.log(transparent);
-                offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
-                offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
-                offscreenCanvas.width = canvas.width * multiplier;
-                offscreenCanvas.height = canvas.height * multiplier;
-                offscreenCtx.scale(multiplier, multiplier);
-                offscreenCtx.drawImage(canvas, 0, 0);
-
-                // Save the image as a PNG
-                const link = document.createElement('a');
-                link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
-                link.href = offscreenCanvas.toDataURL('image/png');
                 link.click();
                 return;
             }
