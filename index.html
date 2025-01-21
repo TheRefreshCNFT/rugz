@@ -240,9 +240,9 @@
       var textY; // Declare
 
       if (isAndroid) {
-          textY = drawPixelatedText(message, canvas.width / 1.98, canvas.height / 1.85, 0.125, textColor);
+          textY = drawPixelatedText(message, canvas.width / 1.99, canvas.height / 1.85, 0.125, textColor);
       } else if (isIOS) {
-          textY = drawPixelatedText(message, canvas.width / 2.03, centerY, 0.125, textColor);
+          textY = drawPixelatedText(message, canvas.width / 2.02, centerY, 0.125, textColor);
       } else {
           textY = drawPixelatedText(message, centerX, canvas.height / 1.8, 0.125, textColor);
       }
