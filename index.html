@@ -328,7 +328,7 @@
             const offsetY = (upscaleResolution - scaledHeight) / 2;
 
             // Set the background color
-            if (!transparent) {
+            if (!isIOS) {
               // Draw the content of the main canvas onto the offscreen canvas
                 offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
                 offscreenCanvasBlk.width = canvas.width * multiplier;
@@ -341,6 +341,7 @@
                 link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
                 link.href = offscreenCanvasBlk.toDataURL('image/png');
                 link.click();
+                return;
             } else {
                 offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
                 offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
@@ -354,8 +355,8 @@
                 link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
                 link.href = offscreenCanvas.toDataURL('image/png');
                 link.click();
+                return;
             }
-            return;
         }
 
 
