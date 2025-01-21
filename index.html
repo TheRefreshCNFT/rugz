@@ -77,6 +77,9 @@
     }
     //canvas.style.borderRadius = "283px";
 
+    var isAndroid = /Android/i.test(navigator.userAgent);
+    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
 
     const backgroundColor = '#ffffff'; // Background color for the rug
     const textColor = '#3b88c3';//adjustColorBrightness('#0731a7', getRandomInt(-40, 40)); // Text color for the message
@@ -233,8 +236,7 @@
       // Draw the pixelated message in the center of the rug
       //drawPixelatedText(message, canvas.width / 2, canvas.height / 1.7, 0.125, textColor);
 
-      var isAndroid = /Android/i.test(navigator.userAgent);
-      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       var textY; // Declare
@@ -242,7 +244,7 @@
       if (isAndroid) {
           textY = drawPixelatedText(message, canvas.width / 1.99, canvas.height / 1.85, 0.125, textColor);
       } else if (isIOS) {
-          textY = drawPixelatedText(message, canvas.width / 2.02, centerY, 0.125, textColor);
+          textY = drawPixelatedText(message, canvas.width / 2, centerY, 0.125, textColor);
       } else {
           textY = drawPixelatedText(message, centerX, canvas.height / 1.8, 0.125, textColor);
       }
