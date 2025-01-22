@@ -308,66 +308,84 @@
  }
 
  function showModal() {
-     const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
-     const modal = document.createElement('div');
-     modal.className = 'modal';
-     if (modal) {
-       modal.style.background = "#000";
-       modal.style.boxShadow = `0 0 10px ${textColor}`;
-     }
-     options.forEach(opt => {
-         const btn = document.createElement('button');
-         btn.textContent = opt;
-         btn.onclick = () => {
-             document.body.removeChild(modal);
-             scaleCanvas(parseInt(opt), opt.includes('t'));
-         };
-         modal.appendChild(btn);
-         // Apply the styles dynamically
-         if (btn) {
-           btn.style.background = "#000";
-           btn.style.color = textColor;
-           btn.style.boxShadow = `0 0 10px ${textColor}`;
+             const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
+             const modal = document.createElement('div');
+             modal.className = 'modal';
+             if (modal) {
+               modal.style.background = "#000";
+               modal.style.boxShadow = `0 0 10px ${textColor}`;
+             }
+             options.forEach(opt => {
+                 const btn = document.createElement('button');
+                 btn.textContent = opt;
+                 btn.onclick = () => {
+                     document.body.removeChild(modal);
+                     scaleCanvas(parseInt(opt), opt.includes('t'));
+                 };
+                 modal.appendChild(btn);
+                 // Apply the styles dynamically
+                 if (btn) {
+                   btn.style.background = "#000";
+                   btn.style.color = textColor;
+                   btn.style.boxShadow = `0 0 10px ${textColor}`;
+                 }
+               });
+             document.body.appendChild(modal);
          }
-       });
-     document.body.appendChild(modal);
- }
 
- function scaleCanvas(multiplier, transparent) {
-         const upscaleResolution = 1024 * multiplier;
-         const offscreenCanvas1 = document.createElement('canvas');
-         const offscreenCtx1 = offscreenCanvas1.getContext('2d', { alpha: transparent });
-         offscreenCanvas1.width = upscaleResolution;
-         offscreenCanvas1.height = upscaleResolution;
-         // Handle background
-        if (!transparent) {
-            // Black background
-            offscreenCtx1.fillStyle = '#000000';
-            offscreenCtx1.fillRect(0, 0, offscreenCanvas1.width, offscreenCanvas1.height);
-        }
+         function scaleCanvas(multiplier, transparent) {
+             const upscaleResolution = 1024 * multiplier;
 
-         const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
-         const scaledWidth = canvas.width * scale;
-         const scaledHeight = canvas.height * scale;
-         const offsetX = (upscaleResolution - scaledWidth) / 2;
-         const offsetY = (upscaleResolution - scaledHeight) / 2;
+             // Create an offscreen canvas
+             const offscreenCanvas = document.createElement('canvas');
+             const offscreenCtx = offscreenCanvas.getContext('2d', { alpha: transparent });
+             offscreenCanvas.width = upscaleResolution;
+             offscreenCanvas.height = upscaleResolution;
+             const offscreenCanvasBlk = document.createElement('canvas');
+             const offscreenCtxBlk = offscreenCanvasBlk.getContext('2d', { alpha: transparent });
+             offscreenCtxBlk.fillStyle = '#000000'; // Black background
+             offscreenCtxBlk.fillRect(0, 0, upscaleResolution, upscaleResolution);
 
-         offscreenCtx1.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
-         offscreenCanvas1.width = canvas.width * multiplier;
-         offscreenCanvas1.height = canvas.height * multiplier;
+             // Calculate scaling factors
+             const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
+             const scaledWidth = canvas.width * scale;
+             const scaledHeight = canvas.height * scale;
+             const offsetX = (upscaleResolution - scaledWidth) / 2;
+             const offsetY = (upscaleResolution - scaledHeight) / 2;
 
-         offscreenCtx1.scale(multiplier, multiplier);
-         offscreenCtx1.drawImage(canvas, 0, 0);
+             // Set the background color
+             if (!transparent) {
+                 console.log(transparent);
+                 // Draw the content of the main canvas onto the offscreen canvas
+                 offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+                 offscreenCanvasBlk.width = canvas.width * multiplier;
+                 offscreenCanvasBlk.height = canvas.height * multiplier;
+                 offscreenCtxBlk.scale(multiplier, multiplier);
+                 offscreenCtxBlk.drawImage(canvas, 0, 0);
 
-         const link = document.createElement('a');
-         link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
-         link.href = offscreenCanvas1.toDataURL('image/png');
-         link.click();
+                 // Save the image as a PNG
+                 const link = document.createElement('a');
+                 link.download = `RUGZ_${multiplier}k_BLK.png`;
+                 link.href = offscreenCanvasBlk.toDataURL('image/png');
+                 link.click();
+                 return;
+             } else {
+                 console.log(transparent);
+                 offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
+                 offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+                 offscreenCanvas.width = canvas.width * multiplier;
+                 offscreenCanvas.height = canvas.height * multiplier;
+                 offscreenCtx.scale(multiplier, multiplier);
+                 offscreenCtx.drawImage(canvas, 0, 0);
 
-         return;
-   }
-
-
+                 // Save the image as a PNG
+                 const link = document.createElement('a');
+                 link.download = `RUGZ_${multiplier}k_TP.png`;
+                 link.href = offscreenCanvas.toDataURL('image/png');
+                 link.click();
+                 return;
+             }
+         }
 
 
     function releaseCanvas(c){c.width=1;c.style.width="1vw";c.height=1;c.style.height="1vh";const x=c.getContext("2d");x&&x.clearRect(0,0,1,1);c.remove()}window.addEventListener("pagehide",()=>{Array.prototype.slice.call(document.getElementsByTagName("canvas")).forEach(releaseCanvas)});
