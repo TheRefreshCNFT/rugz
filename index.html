@@ -317,8 +317,9 @@
             offscreenCanvas.height = upscaleResolution;
             const offscreenCanvasBlk = document.createElement('canvas');
             const offscreenCtxBlk = offscreenCanvasBlk.getContext('2d', { alpha: transparent });
-            offscreenCtxBlk.fillStyle = '#000000'; // Black background
-            offscreenCtxBlk.fillRect(0, 0, upscaleResolution, upscaleResolution);
+            offscreenCanvasBlk.width = upscaleResolution;
+            offscreenCanvasBlk.height = upscaleResolution;
+
 
             // Calculate scaling factors
             const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
@@ -346,6 +347,8 @@
 
             } else {
               console.log(transparent);
+              offscreenCtxBlk.fillStyle = '#000000'; // Black background
+              offscreenCtxBlk.fillRect(0, 0, upscaleResolution, upscaleResolution);
               // Draw the content of the main canvas onto the offscreen canvas
               offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
               offscreenCanvasBlk.width = canvas.width * multiplier;
