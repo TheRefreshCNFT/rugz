@@ -334,58 +334,40 @@
          }
 
          function scaleCanvas(multiplier, transparent) {
-             const upscaleResolution = 1024 * multiplier;
+    // Calculate the target dimensions while preserving aspect ratio
+    const originalAspectRatio = canvas.width / canvas.height;
+    const upscaleHeight = 1024 * multiplier;
+    const upscaleWidth = upscaleHeight * originalAspectRatio;
 
-             // Create an offscreen canvas
-             const offscreenCanvas = document.createElement('canvas');
-             const offscreenCtx = offscreenCanvas.getContext('2d', { alpha: transparent });
-             offscreenCanvas.width = upscaleResolution;
-             offscreenCanvas.height = upscaleResolution;
-             const offscreenCanvasBlk = document.createElement('canvas');
-             const offscreenCtxBlk = offscreenCanvasBlk.getContext('2d', { alpha: transparent });
-             offscreenCtxBlk.fillStyle = '#000000'; // Black background
-             offscreenCtxBlk.fillRect(0, 0, upscaleResolution, upscaleResolution);
+    // Create the offscreen canvas
+    const offscreenCanvas = document.createElement('canvas');
+    const offscreenCtx = offscreenCanvas.getContext('2d');
+    offscreenCanvas.width = upscaleWidth;
+    offscreenCanvas.height = upscaleHeight;
 
-             // Calculate scaling factors
-             const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
-             const scaledWidth = canvas.width * scale;
-             const scaledHeight = canvas.height * scale;
-             const offsetX = (upscaleResolution - scaledWidth) / 2;
-             const offsetY = (upscaleResolution - scaledHeight) / 2;
+    // Handle background
+    if (!transparent) {
+        offscreenCtx.fillStyle = '#000000'; // Black background
+        offscreenCtx.fillRect(0, 0, upscaleWidth, upscaleHeight);
+    }
 
-             // Set the background color
-             if (!transparent) {
-                 console.log(transparent);
-                 // Draw the content of the main canvas onto the offscreen canvas
-                 offscreenCtxBlk.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
-                 offscreenCanvasBlk.width = canvas.width * multiplier;
-                 offscreenCanvasBlk.height = canvas.height * multiplier;
-                 offscreenCtxBlk.scale(multiplier, multiplier);
-                 offscreenCtxBlk.drawImage(canvas, 0, 0);
+    // Calculate scaling factors
+    const scale = upscaleHeight / canvas.height;
+    const scaledWidth = canvas.width * scale;
+    const scaledHeight = canvas.height * scale;
+    const offsetX = (upscaleWidth - scaledWidth) / 2;
+    const offsetY = (upscaleHeight - scaledHeight) / 2;
 
-                 // Save the image as a PNG
-                 const link = document.createElement('a');
-                 link.download = `RUGZ_${multiplier}k_BLK.png`;
-                 link.href = offscreenCanvasBlk.toDataURL('image/png');
-                 link.click();
-                 return;
-             } else {
-                 console.log(transparent);
-                 offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution); // Transparent background
-                 offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
-                 offscreenCanvas.width = canvas.width * multiplier;
-                 offscreenCanvas.height = canvas.height * multiplier;
-                 offscreenCtx.scale(multiplier, multiplier);
-                 offscreenCtx.drawImage(canvas, 0, 0);
+    // Draw the original canvas onto the offscreen canvas
+    offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
 
-                 // Save the image as a PNG
-                 const link = document.createElement('a');
-                 link.download = `RUGZ_${multiplier}k_TP.png`;
-                 link.href = offscreenCanvas.toDataURL('image/png');
-                 link.click();
-                 return;
-             }
-         }
+    // Save the image
+    const link = document.createElement('a');
+    link.download = `RUGZ_${multiplier}k_${transparent ? 'TP' : 'BLK'}.png`;
+    link.href = offscreenCanvas.toDataURL('image/png');
+    link.click();
+}
+
 
 
     function releaseCanvas(c){c.width=1;c.style.width="1vw";c.height=1;c.style.height="1vh";const x=c.getContext("2d");x&&x.clearRect(0,0,1,1);c.remove()}window.addEventListener("pagehide",()=>{Array.prototype.slice.call(document.getElementsByTagName("canvas")).forEach(releaseCanvas)});
