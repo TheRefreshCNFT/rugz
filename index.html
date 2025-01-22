@@ -281,32 +281,6 @@
             showModal();
         });
 
-        function showModal() {
-     const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
-     const modal = document.createElement('div');
-     modal.className = 'modal';
-     if (modal) {
-       modal.style.background = "#000";
-       modal.style.boxShadow = `0 0 10px ${textColor}`;
-     }
-     options.forEach(opt => {
-         const btn = document.createElement('button');
-         btn.textContent = opt;
-         btn.onclick = () => {
-             document.body.removeChild(modal);
-             scaleCanvas(parseInt(opt), opt.includes('t'));
-         };
-         modal.appendChild(btn);
-         // Apply the styles dynamically
-         if (btn) {
-           btn.style.background = "#000";
-           btn.style.color = textColor;
-           btn.style.boxShadow = `0 0 10px ${textColor}`;
-         }
-       });
-     document.body.appendChild(modal);
- }
-
  function showModal() {
              const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
              const modal = document.createElement('div');
