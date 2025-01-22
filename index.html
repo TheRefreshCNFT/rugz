@@ -339,6 +339,12 @@
          const offscreenCtx1 = offscreenCanvas1.getContext('2d', { alpha: transparent });
          offscreenCanvas1.width = upscaleResolution;
          offscreenCanvas1.height = upscaleResolution;
+         // Handle background
+        if (!transparent) {
+            // Black background
+            offscreenCtx1.fillStyle = '#000000';
+            offscreenCtx1.fillRect(0, 0, offscreenCanvas1.width, offscreenCanvas1.height);
+        }
 
          const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
          const scaledWidth = canvas.width * scale;
