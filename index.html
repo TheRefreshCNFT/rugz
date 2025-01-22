@@ -282,66 +282,85 @@
         });
 
         function showModal() {
-            const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            if (modal) {
-                modal.style.background = "#000";
-                modal.style.boxShadow = `0 0 10px ${textColor}`;
-            }
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.textContent = opt;
-                btn.onclick = () => {
-                    document.body.removeChild(modal);
-                    scaleCanvas(parseInt(opt), opt.includes('t')); // Use `includes('t')` to determine transparency
-                };
-                modal.appendChild(btn);
-                // Apply the styles dynamically
-                if (btn) {
-                    btn.style.background = "#000";
-                    btn.style.color = textColor;
-                    btn.style.boxShadow = `0 0 10px ${textColor}`;
-                }
-            });
-            document.body.appendChild(modal);
-        }
+     const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
+     const modal = document.createElement('div');
+     modal.className = 'modal';
+     if (modal) {
+       modal.style.background = "#000";
+       modal.style.boxShadow = `0 0 10px ${textColor}`;
+     }
+     options.forEach(opt => {
+         const btn = document.createElement('button');
+         btn.textContent = opt;
+         btn.onclick = () => {
+             document.body.removeChild(modal);
+             scaleCanvas(parseInt(opt), opt.includes('t'));
+         };
+         modal.appendChild(btn);
+         // Apply the styles dynamically
+         if (btn) {
+           btn.style.background = "#000";
+           btn.style.color = textColor;
+           btn.style.boxShadow = `0 0 10px ${textColor}`;
+         }
+       });
+     document.body.appendChild(modal);
+ }
 
-        function scaleCanvas(multiplier, transparent) {
-            const upscaleResolution = 1024 * multiplier;
+ function showModal() {
+     const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
+     const modal = document.createElement('div');
+     modal.className = 'modal';
+     if (modal) {
+       modal.style.background = "#000";
+       modal.style.boxShadow = `0 0 10px ${textColor}`;
+     }
+     options.forEach(opt => {
+         const btn = document.createElement('button');
+         btn.textContent = opt;
+         btn.onclick = () => {
+             document.body.removeChild(modal);
+             scaleCanvas(parseInt(opt), opt.includes('t'));
+         };
+         modal.appendChild(btn);
+         // Apply the styles dynamically
+         if (btn) {
+           btn.style.background = "#000";
+           btn.style.color = textColor;
+           btn.style.boxShadow = `0 0 10px ${textColor}`;
+         }
+       });
+     document.body.appendChild(modal);
+ }
 
-            // Create a single offscreen canvas
-            const offscreenCanvas = document.createElement('canvas');
-            const offscreenCtx = offscreenCanvas.getContext('2d');
-            offscreenCanvas.width = upscaleResolution;
-            offscreenCanvas.height = upscaleResolution;
+ function scaleCanvas(multiplier, transparent) {
+         const upscaleResolution = 1024 * multiplier;
+         const offscreenCanvas1 = document.createElement('canvas');
+         const offscreenCtx1 = offscreenCanvas1.getContext('2d', { alpha: transparent });
+         offscreenCanvas1.width = upscaleResolution;
+         offscreenCanvas1.height = upscaleResolution;
 
-            // Explicitly handle background
-            if (!transparent) {
-                // Black background
-                offscreenCtx.fillStyle = '#000000';
-                offscreenCtx.fillRect(0, 0, upscaleResolution, upscaleResolution);
-            } else {
-                // Transparent background: do nothing (default is transparent)
-                offscreenCtx.clearRect(0, 0, upscaleResolution, upscaleResolution);
-            }
+         const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
+         const scaledWidth = canvas.width * scale;
+         const scaledHeight = canvas.height * scale;
+         const offsetX = (upscaleResolution - scaledWidth) / 2;
+         const offsetY = (upscaleResolution - scaledHeight) / 2;
 
-            // Calculate scaling factors
-            const scale = upscaleResolution / Math.min(canvas.width, canvas.height);
-            const scaledWidth = canvas.width * scale;
-            const scaledHeight = canvas.height * scale;
-            const offsetX = (upscaleResolution - scaledWidth) / 2;
-            const offsetY = (upscaleResolution - scaledHeight) / 2;
+         offscreenCtx1.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+         offscreenCanvas1.width = canvas.width * multiplier;
+         offscreenCanvas1.height = canvas.height * multiplier;
 
-            // Draw the content of the main canvas onto the offscreen canvas
-            offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+         offscreenCtx1.scale(multiplier, multiplier);
+         offscreenCtx1.drawImage(canvas, 0, 0);
 
-            // Save the image as a PNG
-            const link = document.createElement('a');
-            link.download = `RUGZ_${multiplier}k_${transparent ? 'TP' : 'BLK'}.png`;
-            link.href = offscreenCanvas.toDataURL('image/png');
-            link.click();
-        }
+         const link = document.createElement('a');
+         link.download = `RUGZ_${multiplier}k${transparent ? '_transparent' : ''}.png`;
+         link.href = offscreenCanvas1.toDataURL('image/png');
+         link.click();
+
+         return;
+   }
+
 
 
 
