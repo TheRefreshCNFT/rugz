@@ -1,1 +1,530 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{overflow:hidden;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}body,html{margin:0!important}.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#555;padding:20px;border-radius:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;box-shadow:0 0 20px gold;z-index:10}.modal button{padding:10px;background:#000;color:gold;border:none;font-weight:700;cursor:pointer;box-shadow:0 0 10px gold}</style></head><body><canvas id="pixelCanvas" style="object-fit:contain;position:absolute"></canvas><script>const a="🔄";const l=8;const r=11;const t=64;const h=l*5.5;const d=10;const u=1;const n="#ffffff";const M="#3b88c3";const o="#ffffff";const k="#d8d8d8";const c="#ffffff";const s="#ffffff";const f="#ffffff";const v=4.5;const m=3.5;const p={5:o,6:M,9:"transparent",10:n,11:c,12:s,13:f};var $=/Android/i.test(navigator.userAgent);var g=/iPhone|iPad|iPod/i.test(navigator.userAgent);function x(t,n){return Math.floor(Math.random()*(n-t+1)+t)}function w(t,n){const o=t[0]==="#";const c=parseInt(t.slice(1),16);let s=(c>>16)+n;let f=(c>>8&255)+n;let e=(c&255)+n;if(s>255)s=255;else if(s<0)s=0;if(f>255)f=255;else if(f<0)f=0;if(e>255)e=255;else if(e<0)e=0;return(o?"#":"")+(s<<16|f<<8|e).toString(16).padStart(6,"0")}const A=document.getElementById("pixelCanvas");const P=A.getContext("2d");const b=1024;const T=b/l;const e=t*l;const I=i(r,t,T);A.width=b;A.height=e;A.style.width="100vw";if(t<=43){A.style.height="100vh"}else{const R=100-(t-43)*.5;A.style.height=`${R}vh`}function i(o,c,s){const t=[];for(let n=0;n<c;n++){const f=[];for(let t=0;t<s;t++){if(n===0||n===c-1){f.push(9)}else if(n%2===0){if(t<o||t>=s-o){f.push(9)}else{if(Math.random()<.4){const e=x(11,13);f.push(e)}else{f.push(5)}}}else{if(t<o||t>=s-o){f.push(9)}else{if(Math.random()<.4){const e=x(11,13);f.push(e)}else{f.push(5)}}}}t.push(f)}return t.flat()}function _(t,n,o,c,s){const f=document.createElement("canvas");const e=f.getContext("2d");f.width=A.width;f.height=A.height;e.font=`${384*c}px Arial`;if($){e.font=`${320*c}px Arial`}e.fillStyle=s;e.textAlign="center";e.textBaseline="middle";e.fillText(t,n*c,o*c);const i=e.getImageData(0,0,f.width,f.height);const a=i.data;for(let t=0;t<a.length;t+=4){if(a[t+3]>0){const l=x(-40,40);a[t]=Math.min(255,Math.max(0,a[t]+l));a[t+1]=Math.min(255,Math.max(0,a[t+1]+l));a[t+2]=Math.min(255,Math.max(0,a[t+2]+l));if(Math.random()<.5){a[t+3]=a[t+3]*x(50,100)/100}}}e.putImageData(i,0,0);P.imageSmoothingEnabled=false;P.drawImage(f,0,0,f.width,f.height,0,0,A.width/c,A.height/c)}function y(){const t=r*l;const n=b-r*l;const o=l;const c=A.height-l;for(let n=0;n<I.length;n++){const e=n%T*l;const i=Math.floor(n/T)*l;let t=G(I[n]);if(I[n]===5||I[n]===6){t=w(p[6],x(-30,30))}if(i/l%2===0){if(e>=(T-13)*l){B(e+l,i,t)}else if(e<13*l){C(e,i,t)}}}for(let n=0;n<I.length;n++){const e=n%T*l;const i=Math.floor(n/T)*l;let t=G(I[n]);if([5,6,11,12,13].includes(I[n])){t=w(p[I[n]],x(-40,40));P.fillStyle=t;P.fillRect(e,i,l,l)}}P.strokeStyle=k;P.lineWidth=u;P.strokeRect(t,o,n-t,c-o);const s=A.width/2;var f;if($){f=_(a,s,A.height/1.85,.125,M)}else if(g){f=_(a,A.width/2.01,A.height/1.98,.125,M)}else{f=_(a,s,A.height/1.8,.125,M)}}function B(t,n,o){const c=t+l-7;for(let t=0;t<d;t++){const s=x(-1,1)*(l/4);const f=Math.PI/v-Math.random()*(Math.PI/m);const e=c+Math.cos(f)*h;const i=n-10+Math.sin(f)*h+s;P.beginPath();P.moveTo(c,n);P.lineTo(e,i);P.strokeStyle=o;P.stroke()}}function C(t,n,o){const c=t-l+7;for(let t=0;t<d;t++){const s=x(-1,1)*(l/5);const f=Math.PI/v-Math.random()*(Math.PI/m);const e=c-Math.cos(f)*h;const i=n-10+Math.sin(f)*h+s;P.beginPath();P.moveTo(c,n);P.lineTo(e,i);P.strokeStyle=o;P.stroke()}}function G(t){return p[t]}y();let K;A.addEventListener("click",t=>t.detail===1&&(K=setTimeout(()=>location.reload(),275)));A.addEventListener("dblclick",()=>{clearTimeout(K);L()});function L(){const t=["1k","1kt","2k","2kt","3k","3kt","4k","4kt","8k","8kt","16k","16kt"];const o=document.createElement("div");o.className="modal";if(o){o.style.background="#000";o.style.boxShadow=`0 0 10px ${M}`}t.forEach(t=>{const n=document.createElement("button");n.textContent=t;n.onclick=()=>{document.body.removeChild(o);U(parseInt(t),t.includes("t"))};o.appendChild(n);if(n){n.style.background="#000";n.style.color=M;n.style.boxShadow=`0 0 10px ${M}`}});document.body.appendChild(o)}function U(t,n){const o=A.width/A.height;const c=512*t;const s=c*o;const f=document.createElement("canvas");const e=f.getContext("2d");f.width=s;f.height=c;if(!n){e.fillStyle="#000000";e.fillRect(0,0,s,c)}const i=c/A.height;const a=A.width*i;const l=A.height*i;const r=(s-a)/2;const h=(c-l)/2;e.drawImage(A,r,h,a,l);const d=document.createElement("a");d.download=`RUGZ_${t}k_${n?"TP":"BLK"}.png`;d.href=f.toDataURL("image/png");d.click()}function Z(t){t.width=1;t.style.width="1vw";t.height=1;t.style.height="1vh";const n=t.getContext("2d");n&&n.clearRect(0,0,1,1);t.remove()}window.addEventListener("pagehide",()=>{Array.prototype.slice.call(document.getElementsByTagName("canvas")).forEach(Z)});</script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      overflow: hidden;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    body, html {
+      margin: 0 !important;
+    }
+
+    .modal {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #555; padding: 20px; border-radius: 10px;
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+        box-shadow: 0 0 20px gold; z-index: 10;
+    }
+    .modal button {
+        padding: 10px; background: #000; color: gold; border: none;
+        font-weight: bold; cursor: pointer; box-shadow: 0 0 10px gold;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pixelCanvas" style="object-fit: contain; position: absolute;"></canvas>
+  <script>
+  //const message = "#F5TW"; //₿ \n multiline
+  const pixelSize = 8;
+  const numSpaces = 11;
+  const numRows = 64;
+  const frayLength = pixelSize * 5.5; // Adjust the length of the fray
+  const frayCount = 10; // Adjust the number of frays
+  const lW = 2;
+  const textColor = "#336b92"; // Text color for the message
+  const basePatternColor = "#000000"; // Base color for the rug pattern
+  const borderColor = "#000000"; // Border color for the middle rug
+  // Additional colors for pixelation
+  const color1 = "#336b92"; // Additional color 1
+  const color2 = "#f159a3"; // Additional color 2
+  const color3 = "#efa949"; // Additional color 3
+  const color4 = "#6c2e9d";
+  const fR1 = 4.5;
+  const fR2 = 3.5;
+
+
+  const colorMap = {
+    5: basePatternColor,
+    6: textColor,
+    9: 'transparent',
+    //10: backgroundColor,
+    11: color1,
+    12: color2,
+    13: color3,
+    14: color4
+  };
+
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    function adjustColorBrightness(color, amount) {
+      const usePound = color[0] === "#";
+      const num = parseInt(color.slice(1), 16);
+      let r = (num >> 16) + amount;
+      let g = ((num >> 8) & 0x00FF) + amount;
+      let b = (num & 0x0000FF) + amount;
+
+      if (r > 255) r = 255;
+      else if (r < 0) r = 0;
+
+      if (g > 255) g = 255;
+      else if (g < 0) g = 0;
+
+      if (b > 255) b = 255;
+      else if (b < 0) b = 0;
+
+      return (usePound ? "#" : "") + (r << 16 | g << 8 | b).toString(16).padStart(6, "0");
+    }
+
+    const canvas = document.getElementById("pixelCanvas");
+    const ctx = canvas.getContext("2d");
+    const canvasWidth = 1024;
+    const rowLength = canvasWidth / pixelSize;
+    const patternHeight = numRows * pixelSize;
+    const rugPattern = generateRugPattern(numSpaces, numRows, rowLength);
+    canvas.width = canvasWidth;
+    canvas.height = patternHeight;
+    canvas.style.width = "100vw";
+    if (numRows <= 43) {
+      canvas.style.height = "100vh";
+    } else {
+      const newVH = 100 - ((numRows - 43) * 0.5);
+      canvas.style.height = `${newVH}vh`;
+    }
+
+    function generatePermutationArray(seed) {
+      const array = Array.from({ length: 256 }, (_, i) => i);
+      let random = mulberry32(seed);
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array.concat(array); // Duplicate the array to avoid wraparound issues
+    }
+
+    function mulberry32(a) {
+      return function () {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+    }
+
+    function perlin(x, y, z, perm) {
+      function fade(t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+      }
+
+      function lerp(t, a, b) {
+        return a + t * (b - a);
+      }
+
+      function grad(hash, x, y, z) {
+        const h = hash & 15;
+        const u = h < 8 ? x : y;
+        const v = h < 4 ? y : h === 12 || h === 14 ? x : z;
+        return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+      }
+
+      const X = Math.floor(x) & 255;
+      const Y = Math.floor(y) & 255;
+      const Z = Math.floor(z) & 255;
+
+      x -= Math.floor(x);
+      y -= Math.floor(y);
+      z -= Math.floor(z);
+
+      const u = fade(x);
+      const v = fade(y);
+      const w = fade(z);
+
+      const A = perm[X] + Y;
+      const AA = perm[A] + Z;
+      const AB = perm[A + 1] + Z;
+      const B = perm[X + 1] + Y;
+      const BA = perm[B] + Z;
+      const BB = perm[B + 1] + Z;
+
+      return lerp(w, lerp(v, lerp(u, grad(perm[AA], x, y, z), grad(perm[BA], x - 1, y, z)), lerp(u, grad(perm[AB], x, y - 1, z), grad(perm[BB], x - 1, y - 1, z))), lerp(v, lerp(u, grad(perm[AA + 1], x, y, z - 1), grad(perm[BA + 1], x - 1, y, z - 1)), lerp(u, grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1))));
+    }
+    function generatePerlinNoisePattern(width, height, scale, seed) {
+      const perm = generatePermutationArray(seed); console.log(perm); // Generate a random permutation array using the seed
+      const noise = [];
+      for (let y = 0; y < height; y++) {
+        const row = [];
+        for (let x = 0; x < width; x++) {
+          const value = perlin(x / scale, y / scale, 0, perm);
+          row.push(value);
+        }
+        noise.push(row);
+      }
+      return noise;
+    }
+
+//might not need this
+    function avoidLongStraightLines(noise, width, height) {
+      const threshold = 0.35;
+      for (let y = 2; y < height - 2; y++) {
+        for (let x = 2; x < width - 2; x++) {
+          if (noise[y][x] > threshold) {
+            let count = 0;
+            if (noise[y - 1][x] > threshold) count++;
+            if (noise[y + 1][x] > threshold) count++;
+            if (noise[y][x - 1] > threshold) count++;
+            if (noise[y][x + 1] > threshold) count++;
+            if (count >= 3) {
+              noise[y][x] = Math.random() * threshold;
+            }
+          }
+        }
+      }
+      return noise;
+    }
+
+//might not need this
+    function countPatternColors(pattern) {
+      const counts = { 5: 0, 11: 0, 12: 0, 13: 0, 14: 0 };
+      pattern.forEach(code => {
+        if (counts[code] !== undefined) counts[code]++;
+      });
+      return counts;
+    }
+
+//might not need this
+    function ensurePatternPresence(pattern, rowLength, numRows) {
+      const patternColors = [5, 11, 12, 13, 14];
+      const totalPixels = rowLength * numRows;
+      const minPatternPixels = Math.ceil(totalPixels * 0);
+
+      console.log('Pattern Counts Before:', countPatternColors(pattern));
+
+      patternColors.forEach(color => {
+        let count = pattern.filter(code => code === color).length;
+        let attempts = 0;
+        const maxAttempts = totalPixels * 2;
+
+        while (count < minPatternPixels && attempts < maxAttempts) {
+          const index = getRandomInt(0, pattern.length - 1);
+          if (pattern[index] === 5) {
+            pattern[index] = color;
+            count++;
+          }
+          attempts++;
+        }
+
+        console.log(`Color ${color}: ${count} after ensuring minimum presence`);
+      });
+
+      console.log('Pattern Counts After:', countPatternColors(pattern));
+
+      return pattern;
+    }
+
+    function generateRugPattern(numSpaces, numRows, rowLength) {
+      const seed = Math.floor(Math.random() * 10000);
+      const scale = 80;//70 + Math.random() * 90;
+      let noise = generatePerlinNoisePattern(rowLength, numRows, scale, seed);
+      noise = avoidLongStraightLines(noise, rowLength, numRows);
+      const pattern = [];
+
+      // Randomizing the ranges for noise thresholds
+      const thresholds = {
+        t1: Math.random() * 0.1 + 0.05,
+        t2: Math.random() * 0.1 + 0.15,
+        t3: Math.random() * 0.1 + 0.25,
+        t4: Math.random() * 0.1 + 0.3 // Ensure it covers a sufficient range
+      };
+
+      const aY = [5, 11, 12, 13, 14];
+      const shuffledArray = [...aY].sort(() => Math.random() - 0.5); // Shuffle the array
+
+      const rV1 = shuffledArray[0];
+      const rV2 = shuffledArray[1];
+      const rV3 = shuffledArray[2];
+      const rV4 = shuffledArray[3];
+      const rV5 = shuffledArray[4];
+
+
+      for (let row = 0; row < numRows; row++) {
+        const rowPattern = [];
+        for (let col = 0; col < rowLength; col++) {
+          if (row === 0 || row === numRows - 1) {
+            rowPattern.push(9); // Solid color for top and bottom rows
+          } else if (row % 2 === 0) {
+            if (col < numSpaces || col >= rowLength - numSpaces) {
+              rowPattern.push(9); // Solid color for the ends of even rows
+            } else {
+              // Apply additional colors based on noise pattern and thresholds
+              const noiseValue = noise[row][col];
+              if (noiseValue < thresholds.t1) {
+                rowPattern.push(rV1);
+              } else if (noiseValue < thresholds.t2) {
+                rowPattern.push(rV2);
+              } else if (noiseValue < thresholds.t3) {
+                rowPattern.push(rV3);
+              } else if (noiseValue < thresholds.t4) {
+                rowPattern.push(rV4);
+              } else {
+                rowPattern.push(rV5); // Solid pattern for the middle part of even rows
+              }
+            }
+          } else {
+            if (col < numSpaces || col >= rowLength - numSpaces) {
+              rowPattern.push(9); // Transparent for the ends of odd rows
+            } else {
+              // Apply additional colors based on noise pattern and thresholds
+              const noiseValue = noise[row][col];
+              if (noiseValue < thresholds.t1) {
+                rowPattern.push(rV1);
+              } else if (noiseValue < thresholds.t2) {
+                rowPattern.push(rV2);
+              } else if (noiseValue < thresholds.t3) {
+                rowPattern.push(rV3);
+              } else if (noiseValue < thresholds.t4) {
+                rowPattern.push(rV4);
+              } else {
+                rowPattern.push(rV5); // Solid pattern for the middle part of odd rows
+              }
+            }
+          }
+        }
+        pattern.push(rowPattern);
+      }
+      //return pattern.flat();
+      const flatPattern = pattern.flat();
+      return ensurePatternPresence(flatPattern, rowLength, numRows);
+    }
+
+  /*  function drawPixelatedText(message, x, y, scale, textColor) {
+      const offscreenCanvas = document.createElement('canvas');
+      const offscreenCtx = offscreenCanvas.getContext('2d');
+      offscreenCanvas.width = canvas.width;
+      offscreenCanvas.height = canvas.height;
+
+      // Draw the text on the offscreen canvas
+      offscreenCtx.font = `${128 * scale}px Arial`;
+      if (isAndroid) {
+        offscreenCtx.font = `${94 * scale}px Arial`;
+      }
+      offscreenCtx.fillStyle = textColor;
+      offscreenCtx.textAlign = "center";
+      offscreenCtx.textBaseline = "middle";
+      offscreenCtx.fillText(message, x * scale, y * scale);
+
+      // Extract the pixel data of the text
+      const textData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      const pixels = textData.data;
+
+      // Modify pixels to apply random opacity and brightness
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] > 0) { // Only modify non-transparent pixels
+          // Randomize brightness
+          const brightnessOffset = getRandomInt(-40, 40);
+          pixels[i] = Math.min(255, Math.max(0, pixels[i] + brightnessOffset)); // Red
+          pixels[i + 1] = Math.min(255, Math.max(0, pixels[i + 1] + brightnessOffset)); // Green
+          pixels[i + 2] = Math.min(255, Math.max(0, pixels[i + 2] + brightnessOffset)); // Blue
+
+          // Randomize opacity (apply to alpha channel)
+          if (Math.random() < 0.5) { // 50% chance to reduce opacity
+            pixels[i + 3] = pixels[i + 3] * getRandomInt(50, 100) / 100; // Random opacity 50-100%
+          }
+        }
+      }
+
+      // Put the modified pixel data back onto the offscreen canvas
+      offscreenCtx.putImageData(textData, 0, 0);
+
+      // Draw the offscreen canvas onto the main canvas
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(
+        offscreenCanvas,
+        0, 0, offscreenCanvas.width, offscreenCanvas.height,
+        0, 0, canvas.width / scale, canvas.height / scale
+      );
+    } */
+
+    function drawPixelArtRug() {
+      const rugStartX = numSpaces * pixelSize;
+      const rugEndX = canvasWidth - numSpaces * pixelSize;
+      const rugStartY = pixelSize;
+      const rugEndY = canvas.height - pixelSize;
+
+      // First, draw the frayed ends
+      for (let i = 0; i < rugPattern.length; i++) {
+        const x = (i % rowLength) * pixelSize;
+        const y = Math.floor(i / rowLength) * pixelSize;
+
+        let color = getColorFromCode(rugPattern[i]);
+
+        // Apply brightness adjustment to frays
+        if (rugPattern[i] === 5 || rugPattern[i] === 6) {
+          color = adjustColorBrightness(colorMap[6], getRandomInt(-30, 30)); // Change colorMap[value] for frays
+        }
+
+        // Draw frayed ends for even rows
+        if ((y / pixelSize) % 2 === 0) {
+          if (x >= (rowLength - 13) * pixelSize) {
+            drawRightFrayedEnd(x + pixelSize, y, color); // Adjust the right side frays
+          } else if (x < 13 * pixelSize) {
+            drawLeftFrayedEnd(x, y, color); // Adjust the left side frays
+          }
+        }
+      }
+
+      // Then, draw the main rug
+      for (let i = 0; i < rugPattern.length; i++) {
+        const x = (i % rowLength) * pixelSize;
+        const y = Math.floor(i / rowLength) * pixelSize;
+
+        let color = getColorFromCode(rugPattern[i]);
+        if ([5, 6, 11, 12, 13, 14].includes(rugPattern[i])) {
+          color = adjustColorBrightness(colorMap[rugPattern[i]], getRandomInt(-40, 40));
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, pixelSize, pixelSize);
+        }
+      }
+
+      // Draw the border
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = lW; // Set the border width
+      ctx.strokeRect(rugStartX, rugStartY, rugEndX - rugStartX, rugEndY - rugStartY);
+
+  /*    // Draw the text on top
+      const centerX = canvas.width / 2;
+      var textY; // Declare
+
+      if (isAndroid) {
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.85, 0.125, textColor);
+      } else if (isIOS) {
+          textY = drawPixelatedText(message, canvas.width / 2.01, canvas.height / 1.98, 0.125, textColor);
+      } else {
+          textY = drawPixelatedText(message, centerX, canvas.height / 1.8, 0.125, textColor);
+      } */
+    }
+
+
+
+
+    function drawRightFrayedEnd(x, y, color) {
+      const startX = x + pixelSize - 7;
+      for (let i = 0; i < frayCount; i++) {
+        const offset = getRandomInt(-1, 1) * (pixelSize / 4);
+        const angle = (Math.PI / fR1) - (Math.random() * (Math.PI / fR2));
+        const endX = startX + Math.cos(angle) * frayLength;
+        const endY = y-10 + Math.sin(angle) * frayLength + offset;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, y);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = color;
+        ctx.stroke();
+      }
+    }
+
+    function drawLeftFrayedEnd(x, y, color) {
+      const startX = x - pixelSize + 7;
+      for (let i = 0; i < frayCount; i++) {
+        const offset = getRandomInt(-1, 1) * (pixelSize / 5);
+        const angle = (Math.PI / fR1) - (Math.random() * (Math.PI / fR2));//(Math.PI / 7) - (Math.random() * (Math.PI / 8));
+        const endX = startX - Math.cos(angle) * frayLength;
+        const endY = y-10 + Math.sin(angle) * frayLength + offset;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, y);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = color;
+        ctx.stroke();
+      }
+    }
+
+    function getColorFromCode(code) {
+      return colorMap[code];
+    }
+
+    drawPixelArtRug();
+
+    let timer;
+        canvas.addEventListener("click", e => e.detail === 1 && (timer = setTimeout(() => location.reload(), 275)));
+
+        canvas.addEventListener("dblclick", () => {
+          clearTimeout(timer);
+            showModal();
+        });
+
+ function showModal() {
+             const options = ['1k', '1kt', '2k', '2kt', '3k', '3kt', '4k', '4kt', '8k', '8kt', '16k', '16kt'];
+             const modal = document.createElement('div');
+             modal.className = 'modal';
+             if (modal) {
+               modal.style.background = "#000";
+               modal.style.boxShadow = `0 0 10px ${textColor}`;
+             }
+             options.forEach(opt => {
+                 const btn = document.createElement('button');
+                 btn.textContent = opt;
+                 btn.onclick = () => {
+                     document.body.removeChild(modal);
+                     scaleCanvas(parseInt(opt), opt.includes('t'));
+                 };
+                 modal.appendChild(btn);
+                 // Apply the styles dynamically
+                 if (btn) {
+                   btn.style.background = "#000";
+                   btn.style.color = textColor;
+                   btn.style.boxShadow = `0 0 10px ${textColor}`;
+                 }
+               });
+             document.body.appendChild(modal);
+         }
+
+         function scaleCanvas(multiplier, transparent) {
+    // Calculate the target dimensions while preserving aspect ratio
+    const originalAspectRatio = canvas.width / canvas.height;
+    const upscaleHeight = 512 * multiplier;
+    const upscaleWidth = upscaleHeight * originalAspectRatio;
+
+    // Create the offscreen canvas
+    const offscreenCanvas = document.createElement('canvas');
+    const offscreenCtx = offscreenCanvas.getContext('2d');
+    offscreenCanvas.width = upscaleWidth;
+    offscreenCanvas.height = upscaleHeight;
+
+    // Handle background
+    if (!transparent) {
+        offscreenCtx.fillStyle = '#000000'; // Black background
+        offscreenCtx.fillRect(0, 0, upscaleWidth, upscaleHeight);
+    }
+
+    // Calculate scaling factors
+    const scale = upscaleHeight / canvas.height;
+    const scaledWidth = canvas.width * scale;
+    const scaledHeight = canvas.height * scale;
+    const offsetX = (upscaleWidth - scaledWidth) / 2;
+    const offsetY = (upscaleHeight - scaledHeight) / 2;
+
+    // Draw the original canvas onto the offscreen canvas
+    offscreenCtx.drawImage(canvas, offsetX, offsetY, scaledWidth, scaledHeight);
+
+    // Save the image
+    const link = document.createElement('a');
+    link.download = `RUGZ_${multiplier}k_${transparent ? 'TP' : 'BLK'}.png`;
+    link.href = offscreenCanvas.toDataURL('image/png');
+    link.click();
+}
+
+    function releaseCanvas(c){c.width=1;c.style.width="1vw";c.height=1;c.style.height="1vh";const x=c.getContext("2d");x&&x.clearRect(0,0,1,1);c.remove()}window.addEventListener("pagehide",()=>{Array.prototype.slice.call(document.getElementsByTagName("canvas")).forEach(releaseCanvas)});
+  </script>
+</body>
+</html>
